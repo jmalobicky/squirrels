@@ -108,6 +108,7 @@ jobs:
           mkdir -pv src/sites/acme/dist
           echo '{"site": "acme"}' > src/sites/acme/dist/outbound.js
       - uses: actions/upload-artifact@v4
+        if: github.ref == 'refs/heads/main'
         with:
           path: src/sites/acme/dist/outbound.js
           compression-level: 0
@@ -134,3 +135,25 @@ jobs:
           echo "Github Event Name: ${{ github.event_name }}"
       - uses: actions/download-artifact@v4
       - run: echo "running deploy-testing-interfaces for acme-test environment"
+
+  deploy-production-interfaces:
+    name: deploy production interfaces
+    if: github.ref == 'refs/heads/main'
+    environment:
+      name: acme-production
+      url: https://example.com
+    needs: deploy-testing-interfaces
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: ./
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: debug vars
+        run: |
+          echo "Github Event Name: ${{ github.event_name }}"
+      - uses: actions/download-artifact@v4
+      - run: echo "running deploy-production-interfaces for acme-production environment"
