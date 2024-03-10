@@ -51,7 +51,7 @@ jobs:
       - run: echo "running tests"
 
   build:
-    name: build
+    name: run build
     needs: sonarqube
     if: |
       ${{ github.event_name != 'pull_request'}} &&
