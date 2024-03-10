@@ -1,8 +1,8 @@
 name: acme
 on:
   push:
-    branches:
-      - main
+    branches-ignore:
+      - 'wip/**'
   workflow_dispatch:
 
 jobs:
