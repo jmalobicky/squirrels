@@ -117,7 +117,7 @@ jobs:
     name: deploy testing interfaces
     environment:
       name: acme-test
-      url: https://acme-test.example.com
+      url: https://test.example.com
     needs: build
     runs-on: ubuntu-latest
     timeout-minutes: 10
