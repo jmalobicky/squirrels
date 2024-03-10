@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 3
     outputs:
-      specific-site: ${{ steps.changes.outputs.echo }}
+      site-changed: ${{ steps.changes.outputs.echo }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -22,8 +22,28 @@ jobs:
           filters: .github/file-filters.yml
           list-files: 'json'
 
-  echo:
+  sonarqube:
+    name: code analysis
+    needs: files-changed
     runs-on: ubuntu-latest
     steps:
-      - name: Echo
-        run: echo "Hello, world!"
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+  test:
+    name: run tests
+    if: |
+      ${{ github.event_name == 'pull_request'}} &&
+      needs.files-changed.outputs.site-changed == 'true'
+    needs: sonarqube
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: ./
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - run: echo "running tests"
