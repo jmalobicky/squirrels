@@ -49,3 +49,17 @@ jobs:
         with:
           fetch-depth: 0
       - run: echo "running tests"
+
+  build:
+    name: build
+    needs: sonarqube
+    if: |
+      ${{ github.event_name != 'pull_request'}} &&
+      needs.files-changed.outputs.site-changed == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - run: echo "running build"
