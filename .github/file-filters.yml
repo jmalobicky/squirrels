@@ -1,5 +1,4 @@
-workflow_files: &workflow_files
-  - ".github/workflows/*.yml"
+workflow_filter: &workflow_filter
   - ".github/file-filters.yml"
 
 project_config: &project_config
@@ -9,14 +8,16 @@ common_site_libs: &common_site_libs
   - "**/common/**/*.[tj]{s,sx}"
 
 site_dependencies: &site_dependencies
-  - *workflow_files
+  - *workflow_filter
   - *common_site_libs
   - *project_config
 
 echo: &echo
   - *site_dependencies
+  - ".github/workflows/echo.yml"
   - "**/sites/echo/**/*.[tj]{s,sx}"
 
 acme: &acme
   - *site_dependencies
+  - ".github/workflows/acme.yml"
   - "**/sites/acme/**/*.[tj]{s,sx}"
