@@ -115,6 +115,7 @@ jobs:
 
   deploy-testing-interfaces:
     name: deploy testing interfaces
+    if: github.ref == 'refs/heads/main'
     environment:
       name: acme-test
       url: https://test.example.com
