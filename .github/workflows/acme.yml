@@ -4,3 +4,10 @@ on:
     branches:
       - main
   workflow_dispatch:
+
+jobs:
+  acme:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Acme
+        run: echo "Hello, world!"
