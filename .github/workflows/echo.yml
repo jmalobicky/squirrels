@@ -28,6 +28,7 @@ jobs:
     name: code analysis
     needs: files-changed
     runs-on: ubuntu-latest
+    if: needs.files-changed.outputs.site-changed == 'true'
     steps:
       - uses: actions/checkout@v4
         with:
