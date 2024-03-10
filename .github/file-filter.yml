@@ -1,0 +1,30 @@
+workflow_files: &workflow_files
+  - ".github/workflows/*.yml"
+  - ".github/file-filters.yml"
+
+project_config: &project_config
+  - "{package,package-lock}.json"
+
+common_site_libs: &common_site_libs
+  - "**/common/**/*.[tj]{s,sx}"
+
+ancillary: &ancillary
+  - "README.md"
+
+echo: &echo
+  - *project_config
+  - *common_site_libs
+  - "**/sites/echo/**/*.[tj]{s,sx}"
+
+acme: &acme
+  - *project_config
+  - *common_site_libs
+  - "**/sites/acme/**/*.[tj]{s,sx}"
+
+all_files: &all_files
+  - *workflow_files
+  - *ancillary
+  - *project_config
+  - *common_site_libs
+  - *echo
+  - *acme
