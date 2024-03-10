@@ -8,23 +8,15 @@ project_config: &project_config
 common_site_libs: &common_site_libs
   - "**/common/**/*.[tj]{s,sx}"
 
-ancillary: &ancillary
-  - "README.md"
+site_dependencies: &site_dependencies
+  - *workflow_files
+  - *common_site_libs
+  - *project_config
 
 echo: &echo
-  - *project_config
-  - *common_site_libs
+  - *site_dependencies
   - "**/sites/echo/**/*.[tj]{s,sx}"
 
 acme: &acme
-  - *project_config
-  - *common_site_libs
+  - *site_dependencies
   - "**/sites/acme/**/*.[tj]{s,sx}"
-
-all_files: &all_files
-  - *workflow_files
-  - *ancillary
-  - *project_config
-  - *common_site_libs
-  - *echo
-  - *acme
