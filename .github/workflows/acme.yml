@@ -39,7 +39,7 @@ jobs:
           echo "Site Changed: ${{ needs.files-changed.outputs.site-changed }}"
 
   testOnly:
-    name: run tests
+    name: run testOnly
     needs: sonarqube
     runs-on: ubuntu-latest
     if: ${{ github.event_name != 'pull_request'}}
@@ -57,7 +57,7 @@ jobs:
       - run: echo "running testOnly"
 
   buildOnly:
-    name: run build
+    name: run buildOnly
     needs: testOnly
     runs-on: ubuntu-latest
     timeout-minutes: 10
