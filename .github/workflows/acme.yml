@@ -1,8 +1,10 @@
 name: acme
 on:
   push:
-    branches:
-      - main
+    branches-ignore:
+      - "wip/**"
+  pull_request:
+    types: [opened, reopened]
   workflow_dispatch:
 
 jobs:
@@ -30,13 +32,32 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+      - name: debug vars
+        run: |
+          echo "Github Event Name: ${{ github.event_name }}"
+          echo "Site Changed: ${{ needs.files-changed.outputs.site-changed }}"
 
-  test:
+  testOnly:
     name: run tests
-    if: |
-      ${{ github.event_name == 'pull_request'}} &&
-      needs.files-changed.outputs.site-changed == 'true'
     needs: sonarqube
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name != 'pull_request'}}
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: ./
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: debug vars
+        run: |
+          echo "Github Event Name: ${{ github.event_name }}"
+      - run: echo "running testOnly"
+
+  buildOnly:
+    name: run build
+    needs: testOnly
     runs-on: ubuntu-latest
     timeout-minutes: 10
     defaults:
@@ -46,4 +67,67 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+      - name: debug vars
+        run: |
+          echo "Github Event Name: ${{ github.event_name }}"
+      - run: echo "running buildOnly"
+
+  test:
+    name: run tests
+    needs: sonarqube
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'pull_request'}}
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: ./
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: debug vars
+        run: |
+          echo "Github Event Name: ${{ github.event_name }}"
       - run: echo "running tests"
+
+  build:
+    name: run build
+    needs: test
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: debug vars
+        run: |
+          echo "Github Event Name: ${{ github.event_name }}"
+      - run: echo "running build"
+      - run: |
+          mkdir -pv src/sites/acme/dist
+          echo '{"site": "acme"}' > src/sites/acme/dist/outbound.js
+      - uses: actions/upload-artifact@v4
+        if: 
+        with:
+          path: src/sites/acme/dist/outbound.js
+          compression-level: 0
+          if-no-files-found: error
+
+  deploy-testing-interfaces:
+    name: deploy testing interfaces
+    environment: acme-test
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: ./
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: debug vars
+        run: |
+          echo "Github Event Name: ${{ github.event_name }}"
+      - uses: actions/download-artifact@v4
+      - run: echo "running deploy-testing-interfaces for acme-test environment"
