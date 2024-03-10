@@ -6,6 +6,24 @@ on:
   workflow_dispatch:
 
 jobs:
+  files-changed:
+    name: detect file changes
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    outputs:
+      workflow_files: ${{ steps.changes.outputs.workflow_files }}
+      all_files: ${{ steps.changes.outputs.all_files }}
+      specific-site: ${{ steps.changes.outputs.echo }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: dorny/paths-filter@v3
+        id: changes
+        with:
+          filters: .github/file-filters.yml
+          list-files: 'json'
+
   echo:
     runs-on: ubuntu-latest
     steps:
