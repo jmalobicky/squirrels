@@ -28,6 +28,7 @@ jobs:
     name: code analysis
     needs: files-changed
     runs-on: ubuntu-latest
+    if: needs.files-changed.outputs.site-changed == 'true'
     steps:
       - uses: actions/checkout@v4
         with:
@@ -107,7 +108,6 @@ jobs:
           mkdir -pv src/sites/acme/dist
           echo '{"site": "acme"}' > src/sites/acme/dist/outbound.js
       - uses: actions/upload-artifact@v4
-        if: 
         with:
           path: src/sites/acme/dist/outbound.js
           compression-level: 0
