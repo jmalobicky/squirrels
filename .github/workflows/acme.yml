@@ -42,7 +42,7 @@ jobs:
     name: run testOnly
     needs: sonarqube
     runs-on: ubuntu-latest
-    if: ${{ github.event_name != 'pull_request'}}
+    if: ${{ github.event_name == 'pull_request'}}
     timeout-minutes: 10
     defaults:
       run:
@@ -77,7 +77,7 @@ jobs:
     name: run test
     needs: sonarqube
     runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'pull_request'}}
+    if: ${{ github.event_name != 'pull_request'}}
     timeout-minutes: 10
     defaults:
       run:
